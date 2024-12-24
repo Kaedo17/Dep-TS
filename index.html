@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scholar Tracker</title>
+    <style>
+      /* Add your styles here */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scholar Tracker</h1>
+    <table id="scholar-table">
+      <thead>
+        <tr>
+          <th>Scholar</th>
+          <th>Top</th>
+          <th>Rank</th>
+          <th>Stars</th>
+          <th>Last Played</th>
+          <th>Wins</th>
+          <th>Losses</th>
+          <th>Total Matches</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data rows will be inserted here dynamically -->
+      </tbody>
+    </table>
+
+    <script>
+      // Function to fetch and update data
+      function fetchData() {
+        fetch("http://127.0.0.1:5000/get_data")
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.querySelector("#scholar-table tbody");
+            tableBody.innerHTML = ""; // Clear previous data
+
+            // Loop through each scholar's data and create a row for each one
+            data.scholars.forEach((scholar) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${scholar.scholar}</td>
+                <td>${scholar.top}</td>
+                <td>${scholar.rank}</td>
+                <td>${scholar.stars}</td>
+                <td>${scholar.wins}</td>
+                <td>${scholar.losses}</td>
+                <td>${scholar.last_played}</td>
+                <td>${scholar.total_matches}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => console.error("Error fetching data:", error));
+      }
+
+      // Fetch data every minute
+      setInterval(fetchData, 60000); // 60000ms = 1 minute
+
+      // Initial fetch to populate data when page loads
+      fetchData();
+    </script>
+  </body>
+</html>
